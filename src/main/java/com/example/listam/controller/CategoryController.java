@@ -1,4 +1,5 @@
 package com.example.listam.controller;
+
 import com.example.listam.entity.Category;
 import com.example.listam.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,23 +18,26 @@ public class CategoryController {
 
     @GetMapping("/categories")
     public String categoriesPage(ModelMap modelMap) {
-        List<Category> all =categoryRepository.findAll();
-        modelMap.addAttribute("categories",all);
+        List<Category> all = categoryRepository.findAll();
+        modelMap.addAttribute("categories", all);
         return "categories";
     }
+
     @GetMapping("/categories/add")
-    public String addCategoryPage(){
+    public String addCategoryPage() {
         return "addCategory";
     }
+
     @PostMapping("/categories/add")
-    public String addCategory(@RequestParam("name") String name){
-        Category category=new Category();
+    public String addCategory(@RequestParam("name") String name) {
+        Category category = new Category();
         category.setName(name);
         categoryRepository.save(category);
         return "redirect:/categories";
     }
+
     @GetMapping("/categories/remove")
-    public String removeCategory(@RequestParam("id") int id){
+    public String removeCategory(@RequestParam("id") int id) {
         categoryRepository.deleteById(id);
         return "redirect:/categories";
     }

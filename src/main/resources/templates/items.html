@@ -18,6 +18,8 @@
         <td><a th:href="@{'/items/' + ${item.id}}"> <span th:text="${item.title}"></span></a></td>
         <td><a th:href="@{/items/remove(id=${item.id})}">Remove</a></td>
     </tr>
+
 </table>
+<a href="/">Back</a>
 </body>
 </html>

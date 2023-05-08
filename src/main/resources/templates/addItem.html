@@ -9,9 +9,8 @@
     <input type="text" name="title"><br>
     <textarea name="description"></textarea>
     <select name="category.id">
-        <option th:each="category:${categories}"
-            th:text="${category.name}" th:value="${category.id}">
-        </option>
+        <option th:each="category: ${categories}"
+                th:text="${category.name}" th:value="${category.id}"></option>
     </select>
     <input type="submit" value="create">
 </form>
