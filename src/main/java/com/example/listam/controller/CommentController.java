@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 import java.util.Optional;
 
+
 @Controller
 public class CommentController {
     @Autowired
@@ -44,9 +45,15 @@ public class CommentController {
             comment1.setComment(comment);
             comment1.setItem(item1);
             commentRepository.save(comment1);
-            return "redirect:/items";
+            return "redirect:/comments";
         } else {
             return "redirect:/singleItem";
         }
+    }
+
+    @GetMapping("comments/remove")
+    public String removeComments(@RequestParam("id") int id) {
+        commentRepository.deleteById(id);
+        return "redirect:/comments";
     }
 }
