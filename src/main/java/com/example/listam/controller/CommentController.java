@@ -22,21 +22,21 @@ public class CommentController {
     @Autowired
     ItemRepository itemRepository;
 
-    @GetMapping("/singleItem")
+    @GetMapping("/comments")
     public String commentPage(ModelMap modelMap) {
         List<Comment> all = commentRepository.findAll();
         modelMap.addAttribute("comments", all);
-        return "singleItem";
+        return "comments";
     }
 
-    @GetMapping("comments/add")
+    @GetMapping("/comments/add")
     public String commentAddPage(ModelMap modelMap) {
         List<Item> all = itemRepository.findAll();
         modelMap.addAttribute("items", all);
         return "singleItem";
     }
 
-    @PostMapping("comments/add")
+    @PostMapping("/comments/add")
     public String commentAdd(@RequestParam("comment") String comment, @RequestParam("item_id") int itemId) {
         Optional<Item> item = itemRepository.findById(itemId);
         if (item.isPresent()) {
@@ -47,11 +47,11 @@ public class CommentController {
             commentRepository.save(comment1);
             return "redirect:/comments";
         } else {
-            return "redirect:/singleItem";
+            return "redirect:/items";
         }
     }
 
-    @GetMapping("comments/remove")
+    @GetMapping("/comments/remove")
     public String removeComments(@RequestParam("id") int id) {
         commentRepository.deleteById(id);
         return "redirect:/comments";

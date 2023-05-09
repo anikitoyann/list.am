@@ -1,5 +1,4 @@
 package com.example.listam.entity;
-
 import jakarta.persistence.*;
 import lombok.Data;
 
