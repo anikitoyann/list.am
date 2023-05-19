@@ -17,4 +17,6 @@ public class Comment {
     @ManyToOne
     private Item item;
     private Date commentDate;
+    @ManyToOne
+    private User user;
 }
