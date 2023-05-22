@@ -1,60 +1,46 @@
 package com.example.listam.controller;
 
-import com.example.listam.entity.Category;
 import com.example.listam.entity.Comment;
 import com.example.listam.entity.Item;
-import com.example.listam.repository.CategoryRepository;
-import com.example.listam.repository.CommentRepository;
-import com.example.listam.repository.ItemRepository;
 import com.example.listam.security.CurrentUser;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import com.example.listam.service.CategoryService;
+import com.example.listam.service.CommentService;
+import com.example.listam.service.ItemService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/items")
 public class ItemController {
 
-    @Autowired
-    private ItemRepository itemRepository;
-    @Autowired
-    private CommentRepository commentRepository;
-    @Autowired
-    private CategoryRepository categoryRepository;
+    private final ItemService itemService;
 
-    @Value("${listam.upload.image.path}")
-    private String imageUploadPath ;
+    private  final CommentService commentService;
+
+    private final CategoryService categoryService;
+
 
     @GetMapping
-    public String itemsPage(ModelMap modelMap) {
-        List<Item> all = itemRepository.findAll();
-        modelMap.addAttribute("items", all);
+    public String itemsPage(ModelMap modelMap, @AuthenticationPrincipal CurrentUser currentUser) {
+        modelMap.addAttribute("items", itemService.findItemsByUser(currentUser.getUser()));
         return "items";
     }
 
     @GetMapping("/{id}")
     public String singleItemPage(@PathVariable("id") int id, ModelMap modelMap) {
-        Optional<Item> byId = itemRepository.findById(id);
+        Optional<Item> byId = itemService.findById(id);
         if (byId.isPresent()) {
             Item item = byId.get();
-            List<Comment> comments = commentRepository.findAllByItem_id(item.getId());
             modelMap.addAttribute("item", item);
-            modelMap.addAttribute("comments", comments);
+            modelMap.addAttribute("comments", commentService.findAllByItem_id(id));
             return "singleItem";
         } else {
             return "redirect:/items";
@@ -64,34 +50,25 @@ public class ItemController {
 
     @GetMapping("/add")
     public String itemsAddPage(ModelMap modelMap) {
-        List<Category> all = categoryRepository.findAll();
-        modelMap.addAttribute("categories", all);
+        modelMap.addAttribute("categories",categoryService.findAll());
         return "addItem";
     }
 
     @PostMapping("/add")
-    public String itemsAdd(@ModelAttribute Item item, @RequestParam("image") MultipartFile multipartFile,@AuthenticationPrincipal CurrentUser currentUser) throws IOException {
-        if (multipartFile != null && !multipartFile.isEmpty()) {
-            String fileName = System.nanoTime() + "_" + multipartFile.getOriginalFilename();
-            File file = new File(imageUploadPath + fileName);
-            multipartFile.transferTo(file);
-            item.setImgName(fileName);
-        }
-        item.setUser(currentUser.getUser());
-        itemRepository.save(item);
+    public String itemsAdd(@ModelAttribute Item item, @RequestParam("image") MultipartFile multipartFile, @AuthenticationPrincipal CurrentUser currentUser) throws IOException {
+itemService.addItem(currentUser.getUser(),multipartFile,item);
         return "redirect:/items";
     }
 
     @GetMapping("/remove")
     public String removeCategory(@RequestParam("id") int id) {
-        itemRepository.deleteById(id);
+       itemService.deleteById(id);
         return "redirect:/items";
     }
 
     @PostMapping("/comment/add")
-    public String addComment(@ModelAttribute Comment comment,@AuthenticationPrincipal CurrentUser currentUser) {
-        comment.setCommentDate(new Date());
-        comment.setUser(currentUser.getUser());
-        commentRepository.save(comment);
+    public String addComment(@ModelAttribute Comment comment, @AuthenticationPrincipal CurrentUser currentUser) {
+        commentService.save(comment,currentUser.getUser());
         return "redirect:/items/" + comment.getItem().getId();
-    }}
+    }
+}

@@ -1,4 +1,5 @@
 package com.example.listam.config;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,23 +19,33 @@ public class SpringSecurityConfig {
     private UserDetailsService userDetailsService;
     @Autowired
     private PasswordEncoder passwordEncoder;
-@Bean
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable()
-        .authorizeHttpRequests()
-                .requestMatchers(HttpMethod.GET,"/").permitAll()
+                .authorizeHttpRequests()
+                .requestMatchers(HttpMethod.GET, "/").permitAll()
                 .requestMatchers("user/register").permitAll()
                 .requestMatchers("/items/remove").hasAnyAuthority("ADMIN")
                 .requestMatchers("/categories/remove").hasAnyAuthority("ADMIN")
+                .requestMatchers("/user/admin").hasAnyAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
-                .formLogin();
+                .formLogin()
+                .loginPage("/customLogin")
+                .defaultSuccessUrl("/customSuccessLogin")
+                .loginProcessingUrl("/login")
+                .permitAll()
+                .and()
+                .logout().permitAll()
+                .logoutSuccessUrl("/");
 
         return httpSecurity.build();
     }
+
     @Bean
-    public AuthenticationProvider authenticationProvider(){
-        DaoAuthenticationProvider authenticationProvider=new DaoAuthenticationProvider();
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService);
         authenticationProvider.setPasswordEncoder(passwordEncoder);
         return authenticationProvider;

@@ -2,26 +2,24 @@ package com.example.listam.controller;
 
 import com.example.listam.entity.Category;
 import com.example.listam.repository.CategoryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.listam.service.CategoryService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+@RequiredArgsConstructor
 
 @Controller
 @RequestMapping("/categories")
 public class CategoryController {
-    @Autowired
-    CategoryRepository categoryRepository;
+
+  private final CategoryService categoryService;
 
     @GetMapping()
     public String categoriesPage(ModelMap modelMap) {
-        List<Category> all = categoryRepository.findAll();
-        modelMap.addAttribute("categories", all);
+        modelMap.addAttribute("categories", categoryService.findAll());
         return "categories";
     }
 
@@ -31,16 +29,14 @@ public class CategoryController {
     }
 
     @PostMapping("/add")
-    public String addCategory(@RequestParam("name") String name) {
-        Category category = new Category();
-        category.setName(name);
-        categoryRepository.save(category);
+    public String addCategory(@ModelAttribute Category category) {
+       categoryService.save(category);
         return "redirect:/categories";
     }
 
     @GetMapping("/remove")
     public String removeCategory(@RequestParam("id") int id) {
-        categoryRepository.deleteById(id);
+        categoryService.deleteById(id);
         return "redirect:/categories";
     }
 }

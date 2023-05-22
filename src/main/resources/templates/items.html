@@ -6,6 +6,8 @@
 </head>
 <body>
 <h1>Items</h1>
+<div th:include="fragment/header::headerFragment">
+</div>
 <a href="/items/add" >Create Item</a>
 <table border="1px">
     <tr>
@@ -21,5 +23,6 @@
         <td><a th:href="@{/items/remove(id=${item.id})}">Remove</a></td>
     </tr>
 </table>
+<a href="/">Back</a>
 </body>
 </html>
