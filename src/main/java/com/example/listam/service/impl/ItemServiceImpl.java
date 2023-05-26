@@ -3,6 +3,7 @@ package com.example.listam.service.impl;
 import com.example.listam.entity.Item;
 import com.example.listam.entity.User;
 import com.example.listam.entity.UserType;
+import com.example.listam.repository.HashtagRepository;
 import com.example.listam.repository.ItemRepository;
 import com.example.listam.service.ItemService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.Optional;
 @Service
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
+    private final HashtagRepository hashtagRepository;
 
     @Value("${listam.upload.image.path}")
     private String imageUploadPath;
@@ -39,7 +41,6 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.findById(id);
     }
 
-    @Override
     public void addItem(User currentUser, MultipartFile multipartFile, Item item) throws IOException {
         if (multipartFile != null && !multipartFile.isEmpty()) {
             String fileName = System.nanoTime() + "_" + multipartFile.getOriginalFilename();

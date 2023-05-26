@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface ItemService {
     List<Item> findItemsByUser(User user);
     Optional<Item> findById(int id);
-    void addItem(User currentUser, MultipartFile multipartFile,Item item) throws IOException;
+    public void addItem(User currentUser, MultipartFile multipartFile, Item item) throws IOException;
 void  deleteById(int id);
 }
 

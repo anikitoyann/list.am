@@ -1,10 +1,13 @@
 package com.example.listam.controller;
 
+import com.example.listam.entity.Category;
 import com.example.listam.entity.Comment;
 import com.example.listam.entity.Item;
+import com.example.listam.repository.HashtagRepository;
 import com.example.listam.security.CurrentUser;
 import com.example.listam.service.CategoryService;
 import com.example.listam.service.CommentService;
+import com.example.listam.service.HashtagService;
 import com.example.listam.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -23,9 +27,10 @@ public class ItemController {
 
     private final ItemService itemService;
 
-    private  final CommentService commentService;
+    private final CommentService commentService;
 
     private final CategoryService categoryService;
+    private final HashtagService hashtagService;
 
 
     @GetMapping
@@ -50,25 +55,28 @@ public class ItemController {
 
     @GetMapping("/add")
     public String itemsAddPage(ModelMap modelMap) {
-        modelMap.addAttribute("categories",categoryService.findAll());
+        List<Category>categories=categoryService.findAll();
+        modelMap.addAttribute("categories",categories);
+        modelMap.addAttribute("hashtags", hashtagService.findAll());
         return "addItem";
     }
 
     @PostMapping("/add")
-    public String itemsAdd(@ModelAttribute Item item, @RequestParam("image") MultipartFile multipartFile, @AuthenticationPrincipal CurrentUser currentUser) throws IOException {
-itemService.addItem(currentUser.getUser(),multipartFile,item);
+    public String itemsAdd(@ModelAttribute Item item, @RequestParam("image") MultipartFile multipartFile,
+                           @AuthenticationPrincipal CurrentUser currentUser) throws IOException {
+        itemService.addItem(currentUser.getUser(), multipartFile, item);
         return "redirect:/items";
     }
 
     @GetMapping("/remove")
     public String removeCategory(@RequestParam("id") int id) {
-       itemService.deleteById(id);
+        itemService.deleteById(id);
         return "redirect:/items";
     }
 
     @PostMapping("/comment/add")
     public String addComment(@ModelAttribute Comment comment, @AuthenticationPrincipal CurrentUser currentUser) {
-        commentService.save(comment,currentUser.getUser());
+        commentService.save(comment, currentUser.getUser());
         return "redirect:/items/" + comment.getItem().getId();
     }
 }

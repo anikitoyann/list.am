@@ -3,6 +3,8 @@ package com.example.listam.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Entity
 @Table(name = "item")
@@ -20,4 +22,9 @@ public class Item {
     private String imgName;
     @ManyToOne
     private User user;
+    @ManyToMany
+    @JoinTable(name = "item_hashtag",
+            joinColumns = @JoinColumn(name = "item_id"),
+            inverseJoinColumns = @JoinColumn(name = "hashtag_id"))
+    List<Hashtag> hashtagList;
 }
