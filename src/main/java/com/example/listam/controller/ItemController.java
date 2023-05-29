@@ -3,7 +3,6 @@ package com.example.listam.controller;
 import com.example.listam.entity.Category;
 import com.example.listam.entity.Comment;
 import com.example.listam.entity.Item;
-import com.example.listam.repository.HashtagRepository;
 import com.example.listam.security.CurrentUser;
 import com.example.listam.service.CategoryService;
 import com.example.listam.service.CommentService;
@@ -36,6 +35,7 @@ public class ItemController {
     @GetMapping
     public String itemsPage(ModelMap modelMap, @AuthenticationPrincipal CurrentUser currentUser) {
         modelMap.addAttribute("items", itemService.findItemsByUser(currentUser.getUser()));
+        modelMap.addAttribute("categories",categoryService.findAll());
         return "items";
     }
 
