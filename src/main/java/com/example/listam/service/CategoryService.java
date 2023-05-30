@@ -1,7 +1,6 @@
 package com.example.listam.service;
 
 import com.example.listam.entity.Category;
-import com.example.listam.entity.User;
 
 import java.util.List;
 
