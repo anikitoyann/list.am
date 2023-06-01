@@ -24,11 +24,14 @@ public class SpringSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers(HttpMethod.GET, "/").permitAll()
-                .requestMatchers("user/register").permitAll()
-                .requestMatchers("/items/remove").hasAnyAuthority("ADMIN")
-                .requestMatchers("/categories/remove").hasAnyAuthority("ADMIN")
-                .requestMatchers("/user/admin").hasAnyAuthority("ADMIN")
+                .requestMatchers(HttpMethod.GET,"/").permitAll()
+                .requestMatchers("/user/register").permitAll()
+                .requestMatchers("/vendor/**").permitAll()
+                .requestMatchers("/css/**").permitAll()
+                .requestMatchers("/js/**").permitAll()
+                .requestMatchers("/img/**").permitAll()
+                .requestMatchers("/categories/**").hasAnyAuthority("ADMIN", "USER")
+                .requestMatchers("/user/admin").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -37,8 +40,9 @@ public class SpringSecurityConfig {
                 .loginProcessingUrl("/login")
                 .permitAll()
                 .and()
-                .logout().permitAll()
-                .logoutSuccessUrl("/");
+                .logout()
+                .logoutSuccessUrl("/")
+                .permitAll();
 
         return httpSecurity.build();
     }

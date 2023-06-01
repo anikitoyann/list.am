@@ -4,8 +4,13 @@ import com.example.listam.entity.Category;
 import com.example.listam.repository.CategoryRepository;
 import com.example.listam.service.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -30,4 +35,8 @@ public class CategoryServiceImpl implements CategoryService {
     public void deleteById(int id) {
         categoryRepository.deleteById(id);
     }
+
 }
+
+
+
