@@ -3,7 +3,9 @@ package com.example.listam.controller;
 import com.example.listam.entity.User;
 import com.example.listam.entity.UserType;
 import com.example.listam.repository.UserRepository;
+import com.example.listam.service.MailService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.mail.MailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,7 @@ public class UserController {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final MailService mailService;
 
     @GetMapping("/register")
     public String registerPage() {
@@ -34,6 +37,8 @@ public class UserController {
             user.setPassword(encodedPassword);
             user.setUserType(UserType.USER);
             userRepository.save(user);
+//send mail
+         mailService.sendMail(user.getEmail(),"Welcome","Hi"+user.getName()+"Welcome to our site!!");
         }
         return "redirect:/";
     }
