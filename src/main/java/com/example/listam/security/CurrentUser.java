@@ -8,7 +8,7 @@ private User user;
 
     public CurrentUser(User user) {
         super(user.getEmail(),
-                user.getPassword(),
+                user.getPassword(),user.isEnabled(),true,true,true,
                 AuthorityUtils.createAuthorityList(user.getUserType().name()));
         this.user=user;
     }

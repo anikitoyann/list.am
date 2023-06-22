@@ -26,6 +26,7 @@ public class SpringSecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers(HttpMethod.GET,"/").permitAll()
                 .requestMatchers("/user/register").permitAll()
+                .requestMatchers("/user/verify").permitAll()
                 .requestMatchers("/vendor/**").permitAll()
                 .requestMatchers("/css/**").permitAll()
                 .requestMatchers("/js/**").permitAll()
