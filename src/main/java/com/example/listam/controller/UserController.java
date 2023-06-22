@@ -5,6 +5,9 @@ import com.example.listam.entity.UserType;
 import com.example.listam.repository.UserRepository;
 import com.example.listam.service.MailService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -12,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 import java.util.UUID;
-
+@Slf4j
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/user")
@@ -24,11 +27,14 @@ public class UserController {
     @Value("${site.url}")
     private String siteUrl;
 
-
     @GetMapping("/register")
     public String registerPage() {
+        log.info("registration page opened");
         return "register";
+
     }
+
+
 
     @PostMapping("/register")
     public String register(@ModelAttribute User user) {
@@ -42,6 +48,7 @@ public class UserController {
             UUID token = UUID.randomUUID();
             user.setToken(token.toString());
             userRepository.save(user);
+            log.info("user with {}email registered",user.getEmail());
 //send mail
             mailService.sendMail(user.getEmail(), "Welcome", "Hi" + user.getName() + "\n" +
                     "please verify your email by clicking on this url: " +

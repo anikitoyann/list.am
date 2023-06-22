@@ -1,12 +1,14 @@
 package com.example.listam.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class MailService {
     private final MailSender mailSender;
@@ -17,5 +19,6 @@ public class MailService {
         simpleMailMessage.setSubject(subject);
         simpleMailMessage.setText(text);
       mailSender.send(simpleMailMessage);
+      log.info("email was delivered for {}",to);
     }
 }
